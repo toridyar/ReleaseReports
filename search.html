@@ -1,1 +1,35 @@
 I'm testing views
+<table>
+  <tr ng-repeat="issue in searchResults">
+    <td>
+      <a href="http://jira.ignitionone.com/browse/{{ issue.key }}" target="_blank">{{ issue.key }}</a>
+    </td>
+    <td>
+      {{ issue.fields.priority.name }}
+    </td>
+    <td>
+      {{ issue.fields.summary }}
+    </td>
+    <td>
+      {{ issue.fields.reporter.displayName }}
+    </td>
+    <td>
+      {{ issue.fields.status.name }}
+    </td>
+    <td>
+      <ul>
+        <li ng-repeat="linkedIssue in issue.fields.issuelinks">
+          <span ng-if="linkedIssue.inwardIssue !== undefined">
+            <a href="http://jira.ignitionone.com/browse/{{ linkedIssue.inwardIssue.key }}" target="_blank">
+            {{ linkedIssue.inwardIssue.key }} </a>
+          </span>
+          <span ng-if="linkedIssue.outwardIssue !== undefined">
+              <a href="http://jira.ignitionone.com/browse/{{ linkedIssue.outwardIssue.key }}" target="_blank">
+            {{ linkedIssue.outwardIssue.key }}</a>
+           </span>
+        </li>
+      </ul>
+    </td>
+
+      </tr>
+</table>
