@@ -19,11 +19,11 @@ I'm testing views
     <td>
       <ul>
         <li ng-repeat="linkedIssue in issue.fields.issuelinks">
-          <span ng-if="linkedIssue.inwardIssue !== undefined">
+          <span ng-if="linkedIssue.inwardIssue !== undefined && linkedIssue.inwardIssue.key !== 'DMSREL-1800'">
             <a href="http://jira.ignitionone.com/browse/{{ linkedIssue.inwardIssue.key }}" target="_blank">
             {{ linkedIssue.inwardIssue.key }} </a>
           </span>
-          <span ng-if="linkedIssue.outwardIssue !== undefined">
+          <span ng-if="linkedIssue.outwardIssue !== undefined && linkedIssue.outwardIssue.key !== 'DMSREL-1800'">
               <a href="http://jira.ignitionone.com/browse/{{ linkedIssue.outwardIssue.key }}" target="_blank">
             {{ linkedIssue.outwardIssue.key }}</a>
            </span>
