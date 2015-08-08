@@ -1,35 +1,45 @@
-I'm testing views
-<table>
-  <tr ng-repeat="issue in searchResults">
-    <td>
-      <a href="http://jira.ignitionone.com/browse/{{ issue.key }}" target="_blank">{{ issue.key }}</a>
-    </td>
-    <td>
+<div class="" style="margin-left:10px; margin-right:10px;">
+  <div class="table table-striped">
+    <div class="row" ng-repeat="issue in searchResults" ng-if="isLinkKeyPlusLinkTypeInvalid(issue,'DMSREL-1800')">
+    <div class="col-xs-1">
+        <a href="http://jira.ignitionone.com/browse/{{ issue.key }}" target="_blank">{{ issue.key }}</a>
+    </div >
+    <div class="col-xs-1">
       {{ issue.fields.priority.name }}
-    </td>
-    <td>
+    </div>
+    <div class="col-xs-5">
       {{ issue.fields.summary }}
-    </td>
-    <td>
+    </div>
+    <div class="col-xs-1">
       {{ issue.fields.reporter.displayName }}
-    </td>
-    <td>
+    </div>
+    <div class="col-xs-1">
       {{ issue.fields.status.name }}
-    </td>
-    <td>
-      <ul>
-        <li ng-repeat="linkedIssue in issue.fields.issuelinks">
-          <span ng-if="linkedIssue.inwardIssue !== undefined && linkedIssue.inwardIssue.key !== 'DMSREL-1800'">
-            <a href="http://jira.ignitionone.com/browse/{{ linkedIssue.inwardIssue.key }}" target="_blank">
-            {{ linkedIssue.inwardIssue.key }} </a>
-          </span>
-          <span ng-if="linkedIssue.outwardIssue !== undefined && linkedIssue.outwardIssue.key !== 'DMSREL-1800'">
-              <a href="http://jira.ignitionone.com/browse/{{ linkedIssue.outwardIssue.key }}" target="_blank">
-            {{ linkedIssue.outwardIssue.key }}</a>
-           </span>
-        </li>
-      </ul>
-    </td>
+    </div>
+    <div class="col-xs-3" ng-if="issue.fields.issuelinks!==undefined && issue.fields.issuelinks.length>0">
+        <div class="subTable">
+          <div class="row" ng-repeat="linkedIssue in issue.fields.issuelinks">
+            <div class="col-xs-6">
+              <a ng-if="linkedIssue.inwardIssue!==undefined" href="http://jira.ignitionone.com/browse/{{ linkedIssue.inwardIssue.key }}" target="_blank">
+                    {{ linkedIssue.inwardIssue.key }} </a>
+              <a ng-if="linkedIssue.outwardIssue!==undefined" href="http://jira.ignitionone.com/browse/{{ linkedIssue.outwardIssue.key }}" target="_blank">
+                    {{ linkedIssue.outwardIssue.key }}</a>
+            </div>
+            <div class="col-xs-6" ng-if="linkedIssue.outwardIssue!==undefined">
+              {{linkedIssue.type.outward}}
+            </div>
+            <div class="col-xs-6" ng-if="linkedIssue.inwardIssue!==undefined">
+              {{linkedIssue.type.inward}}
+            </div>
+        </div>
+      </div>
 
-      </tr>
-</table>
+    </div>
+    <div class="col-xs-3" ng-if="issue.fields.issuelinks===undefined || issue.fields.issuelinks.length<=0">
+      No Linked Issues
+    </div>
+
+    </div>
+  </div>
+</div>
+</div>

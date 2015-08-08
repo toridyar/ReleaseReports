@@ -16,4 +16,21 @@ releaseReportsControllers.controller('searchCtrl',['$scope','$http',
      $scope.searchResults=data.issues;
      });
 
+     $scope.isLinkKeyPlusLinkTypeInvalid=isLinkKeyPlusLinkTypeInvalid;
+
+
 }]);
+
+
+var isLinkKeyPlusLinkTypeInvalid = function(issue,linkKey) {
+  var typeName = "Found During Regression";
+  for(i=0;i<issue.fields.issuelinks.length;i++){
+    if(issue.fields.issuelinks[i].inwardIssue!==undefined && issue.fields.issuelinks[i].inwardIssue.key===linkKey && issue.fields.issuelinks[i].type.name===typeName)  {
+      return false;
+    }
+    if(issue.fields.issuelinks[i].outwardIssue!==undefined && issue.fields.issuelinks[i].outwardIssue.key===linkKey && issue.fields.issuelinks[i].type.name===typeName)  {
+      return false;
+    }
+  }
+  return true;
+}
