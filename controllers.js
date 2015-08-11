@@ -5,12 +5,7 @@ releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
   function($scope, $http){
     var path = "/release/jiradata"
     var PreReleaseDate ='';
-    var ReleaseDate ='';
-    var date = new Date();
-    var yyyy = date.getFullYear().toString();
-    var mm = (date.getMonth()+1).toString();
-    var dd  = date.getDate().toString();
-    var dateFormattedString = yyyy +"/"+ (mm[1]?mm:"0"+mm[0]) +"/"+ (dd[1]?dd:"0"+dd[0]);
+    var ReleaseDate = new Date().yyyymmdd("/");
     $http.defaults.headers.get={'Content-Type':'application/json'};
     $http.get("http://localhost:3000/api/devopsapi.ignitionone.com/"+encodeURIComponent(path)).success(function(data){
      $scope.devReleaseResults=data;
@@ -38,7 +33,7 @@ releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
      //PreReleaseDate='2015/07/22';
      //DELETE ME
      //hardcoding ReleaseDate - DELETE ME
-     ReleaseDate='2015/08/03';
+     //ReleaseDate='2015/08/03';
      //DELETE ME
 
      var path = "/rest/api/2/search?jql=project in (MEDIACORE,SEARCHDEV) AND issuetype = BUG AND created >=";
@@ -69,3 +64,10 @@ var isLinkKeyPlusLinkTypeInvalid = function(issue,linkKey) {
   }
   return true;
 }
+
+Date.prototype.yyyymmdd = function(delimiter) {
+   var yyyy = this.getFullYear().toString();
+   var mm = (this.getMonth()+1).toString(); // getMonth() is zero-based
+   var dd  = this.getDate().toString();
+   return yyyy + delimiter + (mm[1]?mm:"0"+mm[0]) + delimiter +(dd[1]?dd:"0"+dd[0]); // padding
+  };
