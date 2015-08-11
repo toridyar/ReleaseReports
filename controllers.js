@@ -9,6 +9,7 @@ releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
     $http.defaults.headers.get={'Content-Type':'application/json'};
     $http.get("http://localhost:3000/api/devopsapi.ignitionone.com/"+encodeURIComponent(path)).success(function(data){
      $scope.devReleaseResults=data;
+
      //hardcoding release ticket
     // $scope.devReleaseResults.ReleaseQATicket='DMSREL-1800';
 
@@ -18,23 +19,19 @@ releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
          PreReleaseDate = $scope.devReleaseResults.ReleaseActions[i].ActionCompleted.split('T')[0];
          break;
        }
-      //Commenting out the logic to pull the Release Date until I have the ActionType  - UNCOMMENT OUT AND ADD ACTIONITEM - need to fix
-       //if (data.ReleaseActions[i].ActionItem !== undefined && data.ReleaseActions[i].ActionItem==="Release")
-      // {
-      //   ReleaseDate = $scope.devReleaseResults.ReleaseActions[i].ActionCompleted.split('T')[0];
-      // }
-    //  if (data.ReleaseActions[i].ActionItem === undefined || data.ReleaseActions[i].ActionItem!=="Release")
-    //  {
-    //     ReleaseDate = dateFormattedString;
-    //    break;
-    //  }
+
+       if (data.ReleaseActions[i].ActionItem !== undefined && data.ReleaseActions[i].ActionItem==="Release")
+       {
+         ReleaseDate = $scope.devReleaseResults.ReleaseActions[i].ActionCompleted.split('T')[0];
+         break;
+       }
      }
-     //hardcoding PreReleaseDate - DELETE ME
+     //hardcoding PreReleaseDate
      //PreReleaseDate='2015/07/22';
-     //DELETE ME
-     //hardcoding ReleaseDate - DELETE ME
+
+     //hardcoding ReleaseDate
      //ReleaseDate='2015/08/03';
-     //DELETE ME
+
 
      var path = "/rest/api/2/search?jql=project in (MEDIACORE,SEARCHDEV) AND issuetype = BUG AND created >=";
      path = path + "'" + PreReleaseDate + "' AND created <= '" + ReleaseDate + "'&fields=issuekey,priority,summary,reporter,status,issuelinks";

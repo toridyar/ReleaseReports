@@ -17,3 +17,7 @@
 {
   padding-top:0px;
 }
+.table>.row.headers
+{
+  font-weight:bold;
+}
