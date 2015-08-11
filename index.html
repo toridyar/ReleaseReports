@@ -11,9 +11,13 @@
     <script type="text/javascript" src="controllers.js"></script>
   </head>
   <body>
-    <p>{{"Hello" + " " + "World" + "!"}}</p>
+    <ul class="nav nav-tabs">
+  <li role="presentation" class="active"><a href="/index.html#">Home</a></li>
+  <li role="presentation"><a href="/index.html#/invalidLinks">Invalid Bug Links</a></li>
+  <li role="presentation"><a href="#">Future Reports</a></li>
+</ul>
 
-    <a href="/index.html#/search">Search</a>
+    
 
     <div ng-view></div>
   </body>

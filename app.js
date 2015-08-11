@@ -3,9 +3,9 @@
 
   app.config(['$routeProvider',
     function($routeProvider){
-      $routeProvider.when('/search',{
-        templateUrl: 'search.html',
-        controller: 'searchCtrl',
+      $routeProvider.when('/invalidLinks',{
+        templateUrl: 'invalidLinks.html',
+        controller: 'invalidLinksCtrl',
       })
     }
   ]);

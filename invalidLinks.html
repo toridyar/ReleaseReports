@@ -1,6 +1,31 @@
-<div class="" style="margin-left:10px; margin-right:10px;">
+<div class="" style="margin-left:10px; margin-right:10px;"><p>
+  jql=project in (DMSDEV) AND issuetype in subTaskIssueTypes() AND created >= '2015/07/22' AND created <= '2015/08/03'&fields=issuekey,priority,summary,reporter,status,issuelinks
+<p>
   <div class="table table-striped">
-    <div class="row" ng-repeat="issue in searchResults" ng-if="isLinkKeyPlusLinkTypeInvalid(issue,'DMSREL-1800')">
+    <strong>
+    <div class="row">
+      <div class="col-xs-1">Issue
+      </div>
+      <div class="col-xs-1">Priority
+      </div>
+      <div class="col-xs-5">Summary
+      </div>
+      <div class="col-xs-1">Reporter
+      </div>
+      <div class="col-xs-1">Status
+      </div>
+      <div class="col-xs-3">
+        <div class="row">
+        <div class="col-xs-6">Linked Issues
+        </div>
+        <div class="col-xs-6">Link Description
+        </div>
+        </div>
+      </div>
+    </strong>
+
+    </div>
+    <div class="row" ng-repeat="issue in searchResults" ng-if="isLinkKeyPlusLinkTypeInvalid(issue,devReleaseResults.ReleaseQATicket)">
     <div class="col-xs-1">
         <a href="http://jira.ignitionone.com/browse/{{ issue.key }}" target="_blank">{{ issue.key }}</a>
     </div >
