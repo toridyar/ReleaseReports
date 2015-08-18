@@ -4,47 +4,48 @@ var releaseReportsControllers = angular.module('releaseReportsControllers',[]);
 releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
   function($scope, $http){
     var path = "/release/jiradata"
-    var PreReleaseDate ='';
-    var ReleaseDate = new Date().yyyymmdd("/");
+    var ReleaseDateCutoff =new Date();
+    var ReleaseDateRelease = new Date();
+    var ReleaseIncludedProjects = '';
     $http.defaults.headers.get={'Content-Type':'application/json'};
     $http.get("http://localhost:3000/api/devopsapi.ignitionone.com/"+encodeURIComponent(path)).success(function(data){
      $scope.devReleaseResults=data;
 
-     //hardcoding release ticket
-    // $scope.devReleaseResults.ReleaseQATicket='DMSREL-1800';
+    // defining release products
+    if (data.ReleaseIncludedProjects !== undefined && data.ReleaseIncludedProjects.length > 0)
+    {
+      ReleaseIncludedProjects=data.ReleaseIncludedProjects.toString();
+    }
+    else
+    {
 
-     for(i=0;i<data.ReleaseActions.length;i++){
-       if (data.ReleaseActions[i].ActionItem==="Complete Pre-Release")
+    }
+
+
+
+
+    // define dates
+           if (data.ReleaseDateCutoff !== undefined)
        {
-         PreReleaseDate = $scope.devReleaseResults.ReleaseActions[i].ActionCompleted.split('T')[0];
-         break;
+         ReleaseDateCutoff = new Date(Date.parse($scope.devReleaseResults.ReleaseDateCutoff));
        }
 
-       if (data.ReleaseActions[i].ActionItem !== undefined && data.ReleaseActions[i].ActionItem==="Release")
+       if (data.ReleaseDateRelease !== undefined)
        {
-         ReleaseDate = $scope.devReleaseResults.ReleaseActions[i].ActionCompleted.split('T')[0];
-         break;
+         ReleaseDateRelease = new Date(Date.parse($scope.devReleaseResults.ReleaseDateRelease));
        }
-     }
-     //hardcoding PreReleaseDate
-     //PreReleaseDate='2015/07/22';
-
-     //hardcoding ReleaseDate
-     //ReleaseDate='2015/08/03';
 
 
-     var path = "/rest/api/2/search?jql=project in (MEDIACORE,SEARCHDEV) AND issuetype = BUG AND created >=";
-     path = path + "'" + PreReleaseDate + "' AND created <= '" + ReleaseDate + "'&fields=issuekey,priority,summary,reporter,status,issuelinks";
+    // building url
+     var path = "/rest/api/2/search?jql=project in ("+ReleaseIncludedProjects +") AND issuetype = BUG AND created >=";
+     path = path + "'" + ReleaseDateCutoff.yyyymmdd('/') + "' AND created <= '" + ReleaseDateRelease.yyyymmdd('/') + "'&fields=issuekey,priority,summary,reporter,status,issuelinks";
      $http.defaults.headers.get={'Content-Type':'application/json'};
      $http.get("http://localhost:3000/jira/"+encodeURIComponent(path)).success(function(data){
       $scope.searchResults=data.issues;
       });
      });
 
-
-
      $scope.isLinkKeyPlusLinkTypeInvalid=isLinkKeyPlusLinkTypeInvalid;
-
 
 }]);
 

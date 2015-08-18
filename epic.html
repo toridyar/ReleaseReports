@@ -1,0 +1,68 @@
+<div class="" style="margin-left:10px; margin-right:10px;">
+
+  <div class="table table-striped">
+        <div class="row headers">
+      <div class="col-xs-1">Issue
+      </div>
+      <div class="col-xs-1">Priority
+      </div>
+      <div class="col-xs-5">Summary
+      </div>
+      <div class="col-xs-1">Reporter
+      </div>
+      <div class="col-xs-1">Status
+      </div>
+      <div class="col-xs-3">
+        <div class="row headers">
+        <div class="col-xs-6">Linked Issues
+        </div>
+        <div class="col-xs-6">Link Description
+        </div>
+        </div>
+      </div>
+
+
+    </div>
+    <div class="row" ng-repeat="issue in searchResults" ng-if="isLinkKeyPlusLinkTypeInvalid(issue,devReleaseResults.ReleaseQATicket)">
+    <div class="col-xs-1">
+        <a href="http://jira.ignitionone.com/browse/{{ issue.key }}" target="_blank">{{ issue.key }}</a>
+    </div >
+    <div class="col-xs-1">
+      {{ issue.fields.priority.name }}
+    </div>
+    <div class="col-xs-5">
+      {{ issue.fields.summary }}
+    </div>
+    <div class="col-xs-1">
+      {{ issue.fields.reporter.displayName }}
+    </div>
+    <div class="col-xs-1">
+      {{ issue.fields.status.name }}
+    </div>
+    <div class="col-xs-3" ng-if="issue.fields.issuelinks!==undefined && issue.fields.issuelinks.length>0">
+        <div class="subTable">
+          <div class="row" ng-repeat="linkedIssue in issue.fields.issuelinks">
+            <div class="col-xs-6">
+              <a ng-if="linkedIssue.inwardIssue!==undefined" href="http://jira.ignitionone.com/browse/{{ linkedIssue.inwardIssue.key }}" target="_blank">
+                    {{ linkedIssue.inwardIssue.key }} </a>
+              <a ng-if="linkedIssue.outwardIssue!==undefined" href="http://jira.ignitionone.com/browse/{{ linkedIssue.outwardIssue.key }}" target="_blank">
+                    {{ linkedIssue.outwardIssue.key }}</a>
+            </div>
+            <div class="col-xs-6" ng-if="linkedIssue.outwardIssue!==undefined">
+              {{linkedIssue.type.outward}}
+            </div>
+            <div class="col-xs-6" ng-if="linkedIssue.inwardIssue!==undefined">
+              {{linkedIssue.type.inward}}
+            </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="col-xs-3" ng-if="issue.fields.issuelinks===undefined || issue.fields.issuelinks.length<=0">
+      No Linked Issues
+    </div>
+
+    </div>
+  </div>
+</div>
+</div>

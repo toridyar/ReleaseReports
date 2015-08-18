@@ -7,6 +7,10 @@
         templateUrl: 'invalidLinks.html',
         controller: 'invalidLinksCtrl',
       })
+      .when('/epic',{
+        templateUrl: 'epic.html',
+        controller: 'epicCtrl',
+      })
     }
   ]);
 
