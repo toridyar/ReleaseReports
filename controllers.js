@@ -39,14 +39,15 @@ releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
 
 
     // building url
-     var path = "/rest/api/2/search?jql=project in ("+ReleaseIncludedProjects +") AND issuetype = BUG AND created >=";
-     path = path + "'" + ReleaseDateCutoff.yyyymmdd('/') + "' AND created <= '" + ReleaseDateRelease.yyyymmdd('/') + "'&fields=issuekey,priority,summary,reporter,status,issuelinks";
-     $http.defaults.headers.get={'Content-Type':'application/json'};
-     $http.get("http://localhost:3000/jira/"+encodeURIComponent(path)).success(function(data){
-      $scope.searchResults=data.issues;
-      });
-     });
-
+    if(errors.length<=0){
+       var path = "/rest/api/2/search?jql=project in ("+ReleaseIncludedProjects +") AND issuetype = BUG AND created >=";
+       path = path + "'" + ReleaseDateCutoff.yyyymmdd('/') + "' AND created <= '" + ReleaseDateRelease.yyyymmdd('/') + "'&fields=issuekey,priority,summary,reporter,status,issuelinks";
+       $http.defaults.headers.get={'Content-Type':'application/json'};
+       $http.get("http://localhost:3000/jira/"+encodeURIComponent(path)).success(function(data){
+        $scope.searchResults=data.issues;
+        });
+       });
+    }
      $scope.isLinkKeyPlusLinkTypeInvalid=isLinkKeyPlusLinkTypeInvalid;
 
 }]);
