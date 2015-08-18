@@ -46,8 +46,9 @@ releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
        $http.get("http://localhost:3000/jira/"+encodeURIComponent(path)).success(function(data){
         $scope.searchResults=data.issues;
         });
-       });
-    }
+      }
+    });
+
      $scope.isLinkKeyPlusLinkTypeInvalid=isLinkKeyPlusLinkTypeInvalid;
 
 }]);
