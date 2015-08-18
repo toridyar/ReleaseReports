@@ -23,7 +23,7 @@ releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
     }
 
   // define dates
-         if (data.ReleaseDateCutoff !== undefined)
+     if (data.ReleaseDateCutoff !== undefined)
      {
        ReleaseDateCutoff = new Date(Date.parse($scope.devReleaseResults.ReleaseDateCutoff));
      }else{
@@ -39,7 +39,7 @@ releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
 
 
     // building url
-    if(errors.length<=0){
+    if($scope.errors.length<=0){
        var path = "/rest/api/2/search?jql=project in ("+ReleaseIncludedProjects +") AND issuetype = BUG AND created >=";
        path = path + "'" + ReleaseDateCutoff.yyyymmdd('/') + "' AND created <= '" + ReleaseDateRelease.yyyymmdd('/') + "'&fields=issuekey,priority,summary,reporter,status,issuelinks";
        $http.defaults.headers.get={'Content-Type':'application/json'};
