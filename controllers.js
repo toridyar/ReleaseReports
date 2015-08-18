@@ -7,6 +7,7 @@ releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
     var ReleaseDateCutoff =new Date();
     var ReleaseDateRelease = new Date();
     var ReleaseIncludedProjects = '';
+    $scope.errors=[];
     $http.defaults.headers.get={'Content-Type':'application/json'};
     $http.get("http://localhost:3000/api/devopsapi.ignitionone.com/"+encodeURIComponent(path)).success(function(data){
      $scope.devReleaseResults=data;
@@ -18,22 +19,23 @@ releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
     }
     else
     {
-
+      $scope.errors.push('Error: No Release Projects supplied');
     }
 
+  // define dates
+         if (data.ReleaseDateCutoff !== undefined)
+     {
+       ReleaseDateCutoff = new Date(Date.parse($scope.devReleaseResults.ReleaseDateCutoff));
+     }else{
+       $scope.errors.push('Error: No Release Date cutoff supplied');
+     }
 
-
-
-    // define dates
-           if (data.ReleaseDateCutoff !== undefined)
-       {
-         ReleaseDateCutoff = new Date(Date.parse($scope.devReleaseResults.ReleaseDateCutoff));
-       }
-
-       if (data.ReleaseDateRelease !== undefined)
-       {
-         ReleaseDateRelease = new Date(Date.parse($scope.devReleaseResults.ReleaseDateRelease));
-       }
+     if (data.ReleaseDateRelease !== undefined)
+     {
+       ReleaseDateRelease = new Date(Date.parse($scope.devReleaseResults.ReleaseDateRelease));
+     }else{
+       $scope.errors.push('Error: No Release Date supplied');
+     }
 
 
     // building url

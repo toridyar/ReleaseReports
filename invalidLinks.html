@@ -1,6 +1,8 @@
 <div class="" style="margin-left:10px; margin-right:10px;">
-
-  <div class="table table-striped">
+  <div ng-if="errors.length>0">
+    <h1 ng-repeat="error in errors">{{error}}</h1>
+  </div>
+  <div ng-if="errors.length<=0" class="table table-striped">
         <div class="row headers">
       <div class="col-xs-1">Issue
       </div>
