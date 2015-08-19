@@ -1,6 +1,5 @@
 var releaseReportsControllers = angular.module('releaseReportsControllers',[]);
 
-
 releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
   function($scope, $http){
     var path = "/release/jiradata"
@@ -40,8 +39,8 @@ releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
 
     // building url
     if($scope.errors.length<=0){
-       var path = "/rest/api/2/search?jql=project in ("+ReleaseIncludedProjects +") AND issuetype = BUG AND created >=";
-       path = path + "'" + ReleaseDateCutoff.yyyymmdd('/') + "' AND created <= '" + ReleaseDateRelease.yyyymmdd('/') + "'&fields=issuekey,priority,summary,reporter,status,issuelinks";
+       path = "/rest/api/2/search?jql=project in ("+ReleaseIncludedProjects +") AND issuetype = BUG AND created >=";
+       path = path + "'" + ReleaseDateCutoff.yyyymmdd('/') + "' AND created <= '" + ReleaseDateRelease.yyyymmdd('/') + "'&maxResults=1000&fields=issuekey,priority,summary,reporter,status,issuelinks";
        $http.defaults.headers.get={'Content-Type':'application/json'};
        $http.get("http://localhost:3000/jira/"+encodeURIComponent(path)).success(function(data){
         $scope.searchResults=data.issues;
@@ -53,6 +52,18 @@ releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
 
 }]);
 
+//qaownerstatus
+releaseReportsControllers.controller('qaownerstatusCtrl',['$scope','$http',
+  function($scope, $http){
+var agileBoardID ='';
+var path = '';
+agileBoardID = "190";
+path = "/rest/agile/1.0/board/"+agileBoardID+"/sprint?state=Active";
+$http.defaults.headers.get={'Content-Type':'application/json'};
+$http.get("http://localhost:3000/jira/"+encodeURIComponent(path)).success(function(data){
+  $scope.stuff=data;
+});
+}]);
 
 var isLinkKeyPlusLinkTypeInvalid = function(issue,linkKey) {
   var typeName = "Found During Regression";
