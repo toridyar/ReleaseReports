@@ -1,80 +1,125 @@
 <div class="" style="margin-left:10px; margin-right:10px;">
-
+  <div class="btn-group">
   <div class="dropdown">
-    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-      Point Solution
+    <button class="btn btn-default dropdown-toggle" type="button" id="pointSolution" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      Choose a Point Solution
       <span class="caret"></span>
     </button>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-      <li><a href=#>Media/Core</a></li>//next steps are to add in ids and pass to controller
-      <li><a href=#>Search</a></li>
-      <li><a href=#>Profile</a></li>
+    <ul class="dropdown-menu" aria-labelledby="pointSolution">
+      <li><a href ng-click="getSprints(190);" id="pointSolution-190">Media/Core</a></li>
+      <li><a href ng-click="getSprints(208);" id="pointSolution-208">Search</a></li>
+      <li><a href ng-click="getSprints(202);" id="pointSolution-202">Profile</a></li>
     </ul>
   </div>
-{{stuff}}
-  <div class="table table-striped">
-        <div class="row headers">
-      <div class="col-xs-1">Issue
-      </div>
-      <div class="col-xs-1">Priority
-      </div>
-      <div class="col-xs-5">Summary
-      </div>
-      <div class="col-xs-1">Reporter
-      </div>
-      <div class="col-xs-1">Status
-      </div>
-      <div class="col-xs-3">
-        <div class="row headers">
-        <div class="col-xs-6">Linked Issues
-        </div>
-        <div class="col-xs-6">Link Description
-        </div>
-        </div>
-      </div>
-
-
-    </div>
-    <div class="row" ng-repeat="issue in searchResults" ng-if="isLinkKeyPlusLinkTypeInvalid(issue,devReleaseResults.ReleaseQATicket)">
-    <div class="col-xs-1">
-        <a href="http://jira.ignitionone.com/browse/{{ issue.key }}" target="_blank">{{ issue.key }}</a>
-    </div >
-    <div class="col-xs-1">
-      {{ issue.fields.priority.name }}
-    </div>
-    <div class="col-xs-5">
-      {{ issue.fields.summary }}
-    </div>
-    <div class="col-xs-1">
-      {{ issue.fields.reporter.displayName }}
-    </div>
-    <div class="col-xs-1">
-      {{ issue.fields.status.name }}
-    </div>
-    <div class="col-xs-3" ng-if="issue.fields.issuelinks!==undefined && issue.fields.issuelinks.length>0">
-        <div class="subTable">
-          <div class="row" ng-repeat="linkedIssue in issue.fields.issuelinks">
-            <div class="col-xs-6">
-              <a ng-if="linkedIssue.inwardIssue!==undefined" href="http://jira.ignitionone.com/browse/{{ linkedIssue.inwardIssue.key }}" target="_blank">
-                    {{ linkedIssue.inwardIssue.key }} </a>
-              <a ng-if="linkedIssue.outwardIssue!==undefined" href="http://jira.ignitionone.com/browse/{{ linkedIssue.outwardIssue.key }}" target="_blank">
-                    {{ linkedIssue.outwardIssue.key }}</a>
-            </div>
-            <div class="col-xs-6" ng-if="linkedIssue.outwardIssue!==undefined">
-              {{linkedIssue.type.outward}}
-            </div>
-            <div class="col-xs-6" ng-if="linkedIssue.inwardIssue!==undefined">
-              {{linkedIssue.type.inward}}
-            </div>
-        </div>
-      </div>
-
-    </div>
-    <div class="col-xs-3" ng-if="issue.fields.issuelinks===undefined || issue.fields.issuelinks.length<=0">
-      No Linked Issues
-    </div>
-
-    </div>
+</div>
+<div class="btn-group">
+  <div class="dropdown">
+    <button class="btn btn-default dropdown-toggle hide" type="button" id="sprintDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      Choose a Sprint
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" aria-labelledby="sprintDropdown">
+      <li ng-repeat="sprint in sprints"><a href ng-click="getEpics(sprint.id);" id="sprint-{{sprint.id}}">{{sprint.name}}</a></li>
+    </ul>
   </div>
 </div>
+
+<div class="page-header">
+  <h1><span>Point Solution:</span> <small>Sprint</small></h1>
 </div>
+
+<table style="width:100%">
+  <tr>
+    <th>Issue</th>
+    <th>Epic Name</th>
+    <th>QA Owner</th>
+    <th># of Tickets</th>
+    <th>% Deployed</th>
+    <th>% Coded</th>
+    <th>% Open</th>
+    <th>% Reopened</th>
+    <th>% In Development</th>
+    <th>% Code Review</th>
+    <th>% In Test</th>
+    <th>% Tested</th>
+    <th>% Closed</th>
+  </tr>
+  <tr ng-repeat="issue in completeResults">
+    <td>
+      <a href="http://jira.ignitionone.com/browse/{{ issue.key }}" target="_blank">{{ issue.key }}</a>
+    </td>
+    <td>
+      {{ issue.name }}
+    </td>
+    <td>
+      {{ issue.qaowner }}
+    </td>
+    <td>
+      {{ issue.stories.length }}
+    </td>
+    <td>
+      <span ng-repeat="status in issue.storyStatuses" >
+          <span ng-if="status.name=='Deployed'" >
+            {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
+          </span>
+      </span>
+        </td>
+        <td>
+          <span ng-repeat="status in issue.storyStatuses" >
+              <span ng-if="status.name=='Coded'" >
+                {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
+              </span>
+          </span>
+            </td>
+    <td>
+      <span ng-repeat="status in issue.storyStatuses" >
+          <span ng-if="status.name=='Open'" >
+            {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
+          </span>
+      </span>
+        </td>
+        <td>
+          <span ng-repeat="status in issue.storyStatuses" >
+              <span ng-if="status.name=='Reopened'" >
+                {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
+              </span>
+          </span>
+            </td>
+            <td>
+              <span ng-repeat="status in issue.storyStatuses" >
+                  <span ng-if="status.name=='In Development'" >
+                    {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
+                  </span>
+              </span>
+                </td>
+                <td>
+                  <span ng-repeat="status in issue.storyStatuses" >
+                      <span ng-if="status.name=='Code Review'" >
+                        {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
+                      </span>
+                  </span>
+                    </td>
+                    <td>
+                      <span ng-repeat="status in issue.storyStatuses" >
+                          <span ng-if="status.name=='In Test'" >
+                            {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
+                          </span>
+                      </span>
+                        </td>
+                        <td>
+                          <span ng-repeat="status in issue.storyStatuses" >
+                              <span ng-if="status.name=='Tested'" >
+                                {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
+                              </span>
+                          </span>
+                            </td>
+                            <td>
+                              <span ng-repeat="status in issue.storyStatuses" >
+                                  <span ng-if="status.name=='Closed'" >
+                                    {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
+                                  </span>
+                              </span>
+                                </td>
+
+  </tr>
+</table>
