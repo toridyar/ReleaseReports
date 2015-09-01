@@ -168,7 +168,6 @@ var getEpics = function($scope, $http, id){
     //get stories from epicLinks
     storyPath = "/rest/api/2/search?jql='Epic Link' in ("+epicList.toString()+")&maxResults=1000";   // max results is only 1000, need to add pagination
       $http.get("http://localhost:3000/jira/"+encodeURIComponent(storyPath)).success(function(data){
-        debugger
         var finalResults = [];
         var stories = data.issues;
         for(var i=0; i<stories.length;i++){
@@ -192,6 +191,17 @@ var getEpics = function($scope, $http, id){
           }else{
             storyStatus.tickets=storyStatus.tickets+1;
           }
+          //fix below
+          for(var i=0; i<stories.fields.subtasks.length;i++){
+            $scope.countFixBugs = 0
+            $scope.countBlockers = 0
+            if(stories.fields.subtasks[i].fields.issuetype.name=== "FixBug")
+            $scope.countFixBugs++
+              if(stories.fields.subtasks[i].fields.priority.name=== "Blocker")
+              $scope.countBlockers++
+          }
+          //fix above
+
           epic.storyStatuses = findAndReplace(epic.storyStatuses,storyStatus.name,storyStatus);
           finalResults = findAndReplace(finalResults,epic.key,epic);
         }
