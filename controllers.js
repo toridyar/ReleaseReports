@@ -113,6 +113,7 @@ var getSprints = function($scope, $http, id){
 };
 
 var cloneEpic = function(epicDetails, id){
+  var epic = {};
   var epicDetail = findObjectByKey(epicDetails, id);
   if(epicDetail !== null ){
     epic.key = epicDetail.key;
@@ -123,6 +124,7 @@ var cloneEpic = function(epicDetails, id){
       epic.qaowner = epicDetail.fields.customfield_11441.displayName;
     }
   }
+  return epic;
 }
 
 var findObjectByKey = function(list, key){
