@@ -110,87 +110,90 @@ var getSprints = function($scope, $http, id){
     $scope.sprints = data.values;
     $('#sprintDropdown').removeClass('hide');
   });
+};
+
+var cloneEpic = function(epicDetails, id){
+  var epicDetail = findObjectByKey(epicDetails, id);
+  if(epicDetail !== null ){
+    epic.key = epicDetail.key;
+    epic.name = epicDetail.fields.customfield_12444;
+    if(epicDetail.fields.customfield_11441 === undefined || epicDetail.fields.customfield_11441 === null ){
+      epic.qaowner = "";
+    }else{
+      epic.qaowner = epicDetail.fields.customfield_11441.displayName;
+    }
+  }
 }
+
+var findObjectByKey = function(list, key){
+  var result = $.grep(finalResults,  function(e){
+      var temp = stories[i].fields.customfield_12443;
+     return e.key == temp });
+  if(result.length>0){
+    return result[0];
+  }
+  return null;
+};
+
 //QAOwnerstatus - get Epics for table
 var getEpics = function($scope, $http, id){
     var sprintID = id;
-    var path1 = '';
-    var path2 = '';
-    var epicLink = {};
-    var epicLinks = '';
-    var epicArray = [];
+    var epicPath = '';
+    var storyPath = '';
+    var epicList = [];
     $('.page-header>h1>small').html($('#sprint-'+id).html());
     path = "/rest/api/2/search?jql=sprint ="+sprintID+" AND issuetype in standardissuetypes()";
     path = path + "&maxResults=1000&fields=customfield_12443";
     $http.get("http://localhost:3000/jira/"+encodeURIComponent(path)).success(function(data){
+      var epicKeyMap={};
       for(i=0;i<data.issues.length;i++){
         if(data.issues[i].fields.customfield_12443!==undefined && data.issues[i].fields.customfield_12443!==null)
         {
-        epicLink[data.issues[i].fields.customfield_12443]=data.issues[i].fields.customfield_12443;
+          epicKeyMap[data.issues[i].fields.customfield_12443]=data.issues[i].fields.customfield_12443;
         }
       }
-      $.each(epicLink, function(key, value) {
-      epicArray.push( value);
-    })
-    epicLinks =  epicArray.toString();
+      $.each(epicKeyMap, function(key, value) {
+        epicList.push(value);
+      })
     //get epic details from epicLinks.
      //customfield_12444 = Epic Name, customfield_11441 = QA Owner Object
-    path1 = "/rest/api/2/search?jql=issue in ("+epicLinks+")&maxResults=1000&fields=customfield_12444,customfield_11441";
-      $http.get("http://localhost:3000/jira/"+encodeURIComponent(path1)).success(function(data){
+    epicPath = "/rest/api/2/search?jql=issue in ("+epicList.toString()+")&maxResults=1000&fields=customfield_12444,customfield_11441";
+      $http.get("http://localhost:3000/jira/"+encodeURIComponent(epicPath)).success(function(data){
         $scope.epicDetails = data.issues;
           });
     //get stories from epicLinks
-    path2 = "/rest/api/2/search?jql='Epic Link' in ("+epicLinks+")&maxResults=1000";   // max results is only 1000, need to add pagination
-      $http.get("http://localhost:3000/jira/"+encodeURIComponent(path2)).success(function(data){
+    storyPath = "/rest/api/2/search?jql='Epic Link' in ("+epicList.toString()+")&maxResults=1000";   // max results is only 1000, need to add pagination
+      $http.get("http://localhost:3000/jira/"+encodeURIComponent(storyPath)).success(function(data){
         debugger
-        var resultsArray = [];
+        var finalResults = [];
         var stories = data.issues;
         for(var i=0; i<stories.length;i++){
-          var epicObject = {};
-          epicObject.stories =[];
-          epicObject.storyStatuses=[];
-          var result = $.grep(resultsArray,  function(e){
-              var temp = stories[i].fields.customfield_12443;
-             return e.key == temp });
-          if(result.length>0){
-            epicObject = result[0];
-          }else{
-            var r = $.grep(  $scope.epicDetails, function(e){
-                var temp = stories[i].fields.customfield_12443;
-               return e.key == temp });
-            if(r.length>0){
-              epicObject.key = r[0].key;
-              epicObject.name = r[0].fields.customfield_12444;
-              if(r[0].fields.customfield_11441 === undefined || r[0].fields.customfield_11441 === null ){
-                epicObject.qaowner = "";
-              }else{
-                epicObject.qaowner = r[0].fields.customfield_11441.displayName;
-              }
-            }
+          var epic = {};
+          epic.stories =[];
+          epic.storyStatuses=[];
+          //look to see if we have created a custom epic Object and stored it in finalResults list
+          epic = findObjectByKey(finalResults, stories[i].fields.customfield_12443);
+          if(epic===null){
+            //didn't find custom epic object so we need to create one
+            //look in epicDetails returned from earlier call to find the epic with id that we will
+            //clone for our custom epic object
+            epic = cloneEpic($scope.epicDetails, stories[i].fields.customfield_12443);
           }
-          if(epicObject.key!==undefined){
-            epicObject.stories.push(stories[i]);
-            var storyStatus ={};
+          epic.stories.push(stories[i]);
+          var storyStatus;
+          storyStatus = findObjectByKey(epic.storyStatuses, stories[i].fields.status.name);
+          if(storyStatus === null){
+            storyStatus = {};
             storyStatus.name= stories[i].fields.status.name;
             storyStatus.key= stories[i].fields.status.name
             storyStatus.tickets=1;
-            r = $.grep( epicObject.storyStatuses, function(e){
-                var temp = stories[i].fields.status.name;
-               return e.name == temp });
-            if(r.length>0){
-              storyStatus = r[0];
-              storyStatus.tickets=storyStatus.tickets+1;
-            }
-            storyStatus.percentage=storyStatus.tickets/epicObject.stories.length;
-
-            epicObject.storyStatuses = findAndReplace(epicObject.storyStatuses,storyStatus.name,storyStatus);
-
-
-
-            resultsArray = findAndReplace(resultsArray,epicObject.key,epicObject);
+          }else{
+            storyStatus.tickets=storyStatus.tickets+1;
           }
+          epic.storyStatuses = findAndReplace(epic.storyStatuses,storyStatus.name,storyStatus);
+          finalResults = findAndReplace(finalResults,epic.key,epic);
         }
-        $scope.completeResults = resultsArray;
+        $scope.completeResults = finalResults;
         debugger
   });
     });
