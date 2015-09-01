@@ -114,6 +114,8 @@ var getSprints = function($scope, $http, id){
 
 var cloneEpic = function(epicDetails, id){
   var epic = {};
+  epic.stories =[];
+  epic.storyStatuses=[];
   var epicDetail = findObjectByKey(epicDetails, id);
   if(epicDetail !== null ){
     epic.key = epicDetail.key;
@@ -171,8 +173,6 @@ var getEpics = function($scope, $http, id){
         var stories = data.issues;
         for(var i=0; i<stories.length;i++){
           var epic = {};
-          epic.stories =[];
-          epic.storyStatuses=[];
           //look to see if we have created a custom epic Object and stored it in finalResults list
           epic = findObjectByKey(finalResults, stories[i].fields.customfield_12443);
           if(epic===null){
