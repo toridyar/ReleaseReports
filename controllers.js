@@ -126,8 +126,8 @@ var cloneEpic = function(epicDetails, id){
 }
 
 var findObjectByKey = function(list, key){
-  var result = $.grep(finalResults,  function(e){
-      var temp = stories[i].fields.customfield_12443;
+  var result = $.grep(list,  function(e){
+      var temp = key;
      return e.key == temp });
   if(result.length>0){
     return result[0];
