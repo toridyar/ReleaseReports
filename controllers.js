@@ -57,9 +57,11 @@ releaseReportsControllers.controller('qaownerstatusCtrl',['$scope','$http',
   function($scope, $http){
 
     $scope.getSprints = function(id){
+      $scope.completeResults=[];
       getSprints($scope,$http,id);
     }
     $scope.getEpics = function(id){
+      $scope.completeResults=[];
       getEpics($scope,$http,id);
     }
 }]);
@@ -112,10 +114,30 @@ var getSprints = function($scope, $http, id){
   });
 };
 
+var createStatus = function(name){
+  var status = {};
+  status.key = name;
+  status.name = name;
+  status.tickets=0;
+  return status;
+}
+
 var cloneEpic = function(epicDetails, id){
   var epic = {};
   epic.stories =[];
   epic.storyStatuses=[];
+  epic.storyStatuses.push(createStatus("Open"));
+  epic.storyStatuses.push(createStatus("Reopened"));
+  epic.storyStatuses.push(createStatus("In Development"));
+  epic.storyStatuses.push(createStatus("Coded"));
+  epic.storyStatuses.push(createStatus("Code Review"));
+  epic.storyStatuses.push(createStatus("In Test"));
+  epic.storyStatuses.push(createStatus("Tested"));
+  epic.storyStatuses.push(createStatus("Closed"));
+  epic.storyStatuses.push(createStatus("Deployed"));
+
+  epic.countFixBugs = 0;
+  epic.countBlockers = 0;
   var epicDetail = findObjectByKey(epicDetails, id);
   if(epicDetail !== null ){
     epic.key = epicDetail.key;
@@ -172,6 +194,7 @@ var getEpics = function($scope, $http, id){
         var stories = data.issues;
         for(var i=0; i<stories.length;i++){
           var epic = {};
+
           //look to see if we have created a custom epic Object and stored it in finalResults list
           epic = findObjectByKey(finalResults, stories[i].fields.customfield_12443);
           if(epic===null){
@@ -191,22 +214,20 @@ var getEpics = function($scope, $http, id){
           }else{
             storyStatus.tickets=storyStatus.tickets+1;
           }
-          //fix below
-          for(var i=0; i<stories.fields.subtasks.length;i++){
-            $scope.countFixBugs = 0
-            $scope.countBlockers = 0
-            if(stories.fields.subtasks[i].fields.issuetype.name=== "FixBug")
-            $scope.countFixBugs++
-              if(stories.fields.subtasks[i].fields.priority.name=== "Blocker")
-              $scope.countBlockers++
+          //counting Fix Bug subtasks and Blockers
+          for(var j=0; j<stories[i].fields.subtasks.length;j++){
+            if(stories[i].fields.subtasks[j].fields.issuetype.name=== "Fix Bug"){
+            epic.countFixBugs++;
+              if(stories[i].fields.subtasks[j].fields.priority !== undefined && stories[i].fields.subtasks[j].fields.priority.name=== "Blocker"){
+              epic.countBlockers++;
+            }
           }
-          //fix above
+          }
 
           epic.storyStatuses = findAndReplace(epic.storyStatuses,storyStatus.name,storyStatus);
           finalResults = findAndReplace(finalResults,epic.key,epic);
         }
         $scope.completeResults = finalResults;
-        debugger
   });
     });
 

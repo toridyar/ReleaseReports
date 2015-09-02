@@ -28,7 +28,7 @@
   <h1><span>Point Solution:</span> <small>Sprint</small></h1>
 </div>
 
-<table style="width:100%">
+<table class = "table" style="width:100%">
   <tr>
     <th>Issue</th>
     <th>Epic Name</th>
@@ -65,63 +65,74 @@
             {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
           </span>
       </span>
-        </td>
-        <td>
-          <span ng-repeat="status in issue.storyStatuses" >
-              <span ng-if="status.name=='Coded'" >
-                {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
-              </span>
+    </td>
+    <td>
+      <span ng-repeat="status in issue.storyStatuses" >
+          <span ng-if="status.name=='Coded'" >
+            {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
           </span>
-            </td>
+      </span>
+    </td>
     <td>
       <span ng-repeat="status in issue.storyStatuses" >
           <span ng-if="status.name=='Open'" >
             {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
           </span>
       </span>
-        </td>
-        <td>
-          <span ng-repeat="status in issue.storyStatuses" >
-              <span ng-if="status.name=='Reopened'" >
-                {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
-              </span>
+    </td>
+    <td>
+      <span ng-repeat="status in issue.storyStatuses" >
+          <span ng-if="status.name=='Reopened'" >
+            {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
           </span>
-            </td>
-            <td>
-              <span ng-repeat="status in issue.storyStatuses" >
-                  <span ng-if="status.name=='In Development'" >
-                    {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
-                  </span>
-              </span>
-                </td>
-                <td>
-                  <span ng-repeat="status in issue.storyStatuses" >
-                      <span ng-if="status.name=='Code Review'" >
-                        {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
-                      </span>
-                  </span>
-                    </td>
-                    <td>
-                      <span ng-repeat="status in issue.storyStatuses" >
-                          <span ng-if="status.name=='In Test'" >
-                            {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
-                          </span>
-                      </span>
-                        </td>
-                        <td>
-                          <span ng-repeat="status in issue.storyStatuses" >
-                              <span ng-if="status.name=='Tested'" >
-                                {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
-                              </span>
-                          </span>
-                            </td>
-                            <td>
-                              <span ng-repeat="status in issue.storyStatuses" >
-                                  <span ng-if="status.name=='Closed'" >
-                                    {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
-                                  </span>
-                              </span>
-                                </td>
+      </span>
+    </td>
+    <td>
+      <span ng-repeat="status in issue.storyStatuses" >
+          <span ng-if="status.name=='In Development'" >
+            {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
+          </span>
+      </span>
+    </td>
+    <td>
+      <span ng-repeat="status in issue.storyStatuses" >
+          <span ng-if="status.name=='Code Review'" >
+            {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
+          </span>
+      </span>
+    </td>
+    <td>
+      <span ng-repeat="status in issue.storyStatuses" >
+          <span ng-if="status.name=='In Test'" >
+            {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
+          </span>
+      </span>
+      </td>
+      <td>
+        <span ng-repeat="status in issue.storyStatuses" >
+            <span ng-if="status.name=='Tested'" >
+              {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
+            </span>
+        </span>
+      </td>
+      <td>
+        <span ng-repeat="status in issue.storyStatuses" >
+            <span ng-if="status.name=='Closed'" >
+              {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
+            </span>
+        </span>
+      </td>
+      <td>
+        {{ issue.countFixBugs }}
+      </td>
+      <td>
+        <span ng-if="issue.countFixBugs > 0" >
+          {{ ((issue.countBlockers)/(issue.countFixBugs)*100) | number:0 }}%
+        </span>
+        <span ng-if="issue.countFixBugs == 0" >
+          0%
+        </span>
+      </td>
 
   </tr>
 </table>
