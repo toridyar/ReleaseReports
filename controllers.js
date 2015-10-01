@@ -39,7 +39,7 @@ releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
 
     // building url
     if($scope.errors.length<=0){
-       path = "/rest/api/2/search?jql=project in ("+ReleaseIncludedProjects +") AND issuetype = BUG AND created >=";
+       path = "/rest/api/2/search?jql=project in ("+ReleaseIncludedProjects +") AND issuetype = BUG AND created >";
        path = path + "'" + ReleaseDateCutoff.yyyymmdd('/') + "' AND created <= '" + ReleaseDateRelease.yyyymmdd('/') + "'&maxResults=1000&fields=issuekey,priority,summary,reporter,status,issuelinks";
        $http.defaults.headers.get={'Content-Type':'application/json'};
        $http.get("http://localhost:3000/jira/"+encodeURIComponent(path)).success(function(data){
@@ -130,7 +130,7 @@ var cloneEpic = function(epicDetails, id){
   epic.storyStatuses.push(createStatus("Reopened"));
   epic.storyStatuses.push(createStatus("In Development"));
   epic.storyStatuses.push(createStatus("Coded"));
-  epic.storyStatuses.push(createStatus("Code Review"));
+  epic.storyStatuses.push(createStatus("In Review"));
   epic.storyStatuses.push(createStatus("In Test"));
   epic.storyStatuses.push(createStatus("Tested"));
   epic.storyStatuses.push(createStatus("Closed"));
@@ -146,6 +146,11 @@ var cloneEpic = function(epicDetails, id){
       epic.qaowner = "";
     }else{
       epic.qaowner = epicDetail.fields.customfield_11441.displayName;
+    }
+    if(epicDetail.fields.customfield_12541 === undefined || epicDetail.fields.customfield_12541 === null ){
+      epic.productmanager = "";
+    }else{
+      epic.productmanager = epicDetail.fields.customfield_12541.displayName;
     }
   }
   return epic;
@@ -182,11 +187,12 @@ var getEpics = function($scope, $http, id){
         epicList.push(value);
       })
     //get epic details from epicLinks.
-     //customfield_12444 = Epic Name, customfield_11441 = QA Owner Object
-    epicPath = "/rest/api/2/search?jql=issue in ("+epicList.toString()+")&maxResults=1000&fields=customfield_12444,customfield_11441";
+     //customfield_12444 = Epic Name, customfield_11441 = QA Owner Object, customfield_12541=Product Manager
+    epicPath = "/rest/api/2/search?jql=issue in ("+epicList.toString()+")&maxResults=1000&fields=customfield_12444,customfield_11441,customfield_12541";
       $http.get("http://localhost:3000/jira/"+encodeURIComponent(epicPath)).success(function(data){
         $scope.epicDetails = data.issues;
           });
+
     //get stories from epicLinks
     storyPath = "/rest/api/2/search?jql='Epic Link' in ("+epicList.toString()+")&maxResults=1000";   // max results is only 1000, need to add pagination
       $http.get("http://localhost:3000/jira/"+encodeURIComponent(storyPath)).success(function(data){
@@ -228,6 +234,7 @@ var getEpics = function($scope, $http, id){
           finalResults = findAndReplace(finalResults,epic.key,epic);
         }
         $scope.completeResults = finalResults;
+        $scope.readyForTestTotal =0;
   });
     });
 
