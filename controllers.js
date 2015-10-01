@@ -126,15 +126,14 @@ var cloneEpic = function(epicDetails, id){
   var epic = {};
   epic.stories =[];
   epic.storyStatuses=[];
-  epic.storyStatuses.push(createStatus("Open"));
+  epic.storyStatuses.push(createStatus("To Do"));
   epic.storyStatuses.push(createStatus("Reopened"));
   epic.storyStatuses.push(createStatus("In Development"));
-  epic.storyStatuses.push(createStatus("Coded"));
+  epic.storyStatuses.push(createStatus("Ready for Test"));
   epic.storyStatuses.push(createStatus("In Review"));
   epic.storyStatuses.push(createStatus("In Test"));
   epic.storyStatuses.push(createStatus("Tested"));
   epic.storyStatuses.push(createStatus("Closed"));
-  epic.storyStatuses.push(createStatus("Deployed"));
 
   epic.countFixBugs = 0;
   epic.countBlockers = 0;
@@ -217,6 +216,18 @@ var getEpics = function($scope, $http, id){
             storyStatus.name= stories[i].fields.status.name;
             storyStatus.key= stories[i].fields.status.name
             storyStatus.tickets=1;
+            if (storyStatus.name === "Open"){
+              storyStatus.name = "To Do";
+            }
+            break;
+            if (storyStatus.name === "In Review" || storyStatus.name === "In Development" || storyStatus.name === "In Progress"){
+              storyStatus.name = "In Development";
+            }
+            break;
+            if (storyStatus.name === "Coded" || storyStatus.name === "Resolved" || storyStatus.name === "Deployed"){
+              storyStatus.name = "Ready for Test";
+            }
+            break;
           }else{
             storyStatus.tickets=storyStatus.tickets+1;
           }

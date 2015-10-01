@@ -74,7 +74,7 @@
     </td>
     <td bgcolor="#81BEF7">
       <span ng-repeat="status in issue.storyStatuses" >
-          <span ng-if="status.name=='Open'" >
+          <span ng-if="status.name=='To Do'" >
             {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
           </span>
       </span>
@@ -88,18 +88,17 @@
     </td>
     <td bgcolor="#F3F781">
       <span ng-repeat="status in issue.storyStatuses" >
-          <span ng-if="status.name=='In Development'||status.name=='In Review'||status.name=='Fake Status'" >
-            {{status.name}}
+          <span ng-if="status.name=='In Development'" >
             {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
           </span>
       </span>
     </td>
     <td bgcolor="#F3F781">
-      <span ng-repeat="status in issue.storyStatuses" ng-if="status.name=='Deployed'||status.name=='Coded'||status.name=='Resolved'">
-            {{readyForTestTotal = readyForTestTotal + status.tickets;""}}
-            {{readyForTestTotal}}
+      <span ng-repeat="status in issue.storyStatuses">
+        <span ng-if="status.name=='Ready for Test'">
+          {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
+        </span>
       </span>
-        {{ ((readyForTestTotal/issue.stories.length)*100) | number:0 }}%
     </td>
     <td bgcolor="#F3F781">
       <span ng-repeat="status in issue.storyStatuses" >
@@ -107,24 +106,24 @@
             {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
           </span>
       </span>
-      </td>
-      <td bgcolor="#F3F781">
-        <span ng-repeat="status in issue.storyStatuses" >
-            <span ng-if="status.name=='Tested'" >
+    </td>
+    <td bgcolor="#F3F781">
+      <span ng-repeat="status in issue.storyStatuses" >
+          <span ng-if="status.name=='Tested'" >
               {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
-            </span>
-        </span>
-      </td>
-      <td bgcolor="#9FF781">
-        <span ng-repeat="status in issue.storyStatuses" >
-            <span ng-if="status.name=='Closed'" >
+          </span>
+      </span>
+    </td>
+    <td bgcolor="#9FF781">
+      <span ng-repeat="status in issue.storyStatuses" >
+          <span ng-if="status.name=='Closed'" >
               {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
-            </span>
-        </span>
-      </td>
-      <td>
+          </span>
+      </span>
+    </td>
+    <td>
         <a href="/index.html#/sprintreportscharts">Pie Chart</a>
-      </td>
+    </td>
 
 
   </tr>
