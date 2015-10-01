@@ -74,7 +74,7 @@
     </td>
     <td bgcolor="#81BEF7">
       <span ng-repeat="status in issue.storyStatuses" >
-          <span ng-if="status.name=='To Do'" >
+          <span ng-if="status.name=='Open'" >
             {{ ((status.tickets/issue.stories.length)*100) | number:0 }}%
           </span>
       </span>

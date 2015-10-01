@@ -126,11 +126,10 @@ var cloneEpic = function(epicDetails, id){
   var epic = {};
   epic.stories =[];
   epic.storyStatuses=[];
-  epic.storyStatuses.push(createStatus("To Do"));
+  epic.storyStatuses.push(createStatus("Open"));
   epic.storyStatuses.push(createStatus("Reopened"));
   epic.storyStatuses.push(createStatus("In Development"));
   epic.storyStatuses.push(createStatus("Ready for Test"));
-  epic.storyStatuses.push(createStatus("In Review"));
   epic.storyStatuses.push(createStatus("In Test"));
   epic.storyStatuses.push(createStatus("Tested"));
   epic.storyStatuses.push(createStatus("Closed"));
@@ -214,32 +213,30 @@ var getEpics = function($scope, $http, id){
           if(storyStatus === null){
             storyStatus = {};
             storyStatus.name= stories[i].fields.status.name;
-            storyStatus.key= stories[i].fields.status.name
+            storyStatus.key= stories[i].fields.status.name;
             storyStatus.tickets=1;
-            if (storyStatus.name === "Open"){
-              storyStatus.name = "To Do";
-            }
-            break;
+
             if (storyStatus.name === "In Review" || storyStatus.name === "In Development" || storyStatus.name === "In Progress"){
               storyStatus.name = "In Development";
+              storyStatus.key="In Development";
             }
-            break;
             if (storyStatus.name === "Coded" || storyStatus.name === "Resolved" || storyStatus.name === "Deployed"){
               storyStatus.name = "Ready for Test";
+              storyStatus.key="Ready for Test";
             }
-            break;
+
           }else{
             storyStatus.tickets=storyStatus.tickets+1;
           }
           //counting Fix Bug subtasks and Blockers
-          for(var j=0; j<stories[i].fields.subtasks.length;j++){
-            if(stories[i].fields.subtasks[j].fields.issuetype.name=== "Fix Bug"){
-            epic.countFixBugs++;
-              if(stories[i].fields.subtasks[j].fields.priority !== undefined && stories[i].fields.subtasks[j].fields.priority.name=== "Blocker"){
-              epic.countBlockers++;
-            }
-          }
-          }
+        //  for(var j=0; j<stories[i].fields.subtasks.length;j++){
+        //    if(stories[i].fields.subtasks[j].fields.issuetype.name=== "Fix Bug"){
+        //    epic.countFixBugs++;
+        //      if(stories[i].fields.subtasks[j].fields.priority !== undefined && stories[i].fields.subtasks[j].fields.priority.name=== "Blocker"){
+        //      epic.countBlockers++;
+        //    }
+        //  }
+        //  }
 
           epic.storyStatuses = findAndReplace(epic.storyStatuses,storyStatus.name,storyStatus);
           finalResults = findAndReplace(finalResults,epic.key,epic);
