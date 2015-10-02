@@ -1,5 +1,9 @@
 var releaseReportsControllers = angular.module('releaseReportsControllers',[]);
 
+google.load('visualization', '1', {
+  packages: ['corechart']
+});
+
 releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
   function($scope, $http){
     var path = "/release/jiradata"
@@ -52,6 +56,9 @@ releaseReportsControllers.controller('invalidLinksCtrl',['$scope','$http',
 
 }]);
 
+
+
+
 //qaownerstatus
 releaseReportsControllers.controller('qaownerstatusCtrl',['$scope','$http',
   function($scope, $http){
@@ -65,6 +72,33 @@ releaseReportsControllers.controller('qaownerstatusCtrl',['$scope','$http',
       getEpics($scope,$http,id);
     }
 }]);
+
+
+function buildChart($scope, row) {
+  var statuses = $scope.completeResults[row].storyStatuses;
+
+  var data = new google.visualization.DataTable();
+          data.addColumn('string', 'Status');
+          data.addColumn('number', 'Number of Tickets');
+          data.addRows([
+            ['To Do', findObjectByKey(statuses,'Open').tickets],
+            ['Reopened',  findObjectByKey(statuses,'Reopened').tickets],
+            ['In Development',  findObjectByKey(statuses,'In Development').tickets],
+            ['Ready for Test',  findObjectByKey(statuses,'Ready for Test').tickets],
+            ['In Test',  findObjectByKey(statuses,'In Test').tickets],
+            ['Tested',  findObjectByKey(statuses,'Tested').tickets],
+            ['Closed',  findObjectByKey(statuses,'Closed').tickets]
+
+
+          ]);
+          var options = {'title':'Stories by Status',
+                          'width':500,
+                          'height':375};
+                          var chart = new google.visualization.PieChart(document.getElementById('chartdiv'));
+
+                           chart.draw(data, options);
+}
+
 
 // checking if Bug is linked incorrectly or linked to a different ticket
 var isLinkKeyPlusLinkTypeInvalid = function(issue,linkKey) {
@@ -242,7 +276,12 @@ var getEpics = function($scope, $http, id){
           finalResults = findAndReplace(finalResults,epic.key,epic);
         }
         $scope.completeResults = finalResults;
-        $scope.readyForTestTotal =0;
+        $scope.drawChart = function(row){
+            $('#chartsModal').modal('show');
+            buildChart($scope, row);
+        }
+
+
   });
     });
 
